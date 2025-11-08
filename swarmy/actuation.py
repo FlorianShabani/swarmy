@@ -60,7 +60,7 @@ class Actuation():
         """
         One step forward.
         """
-
+        velocity = min(velocity, self.config['max_move_distance'])
         # calculate the position from the direction and speed and update body position
         robot_position_x, robot_position_y, robot_heading = self.agent.get_position()
 
@@ -76,6 +76,7 @@ class Actuation():
         """
         One step backward.
         """
+        velocity = min(velocity, self.config['max_move_distance'])
         robot_position_x, robot_position_y, robot_heading = self.agent.get_position()
 
         direction_x = math.sin(math.radians(robot_heading))
@@ -86,12 +87,13 @@ class Actuation():
         self.agent.set_position(new_position_x, new_position_y, robot_heading)
 
     def turn_right(self, angle_velocity):
-
+        angle_velocity = min(angle_velocity, self.config['max_angle_change'])
         robot_position_x, robot_position_y, robot_heading = self.agent.get_position()
         new_angle = (robot_heading - angle_velocity) % 360
         self.agent.set_position(robot_position_x, robot_position_y, new_angle)
 
     def turn_left(self,angle_velocity):
+        angle_velocity = min(angle_velocity, self.config['max_angle_change'])
         # new angle
         robot_position_x, robot_position_y, robot_heading = self.agent.get_position()
         new_angle = (robot_heading + angle_velocity) % 360

@@ -5,6 +5,8 @@
 # status:       prototype
 # =============================================================================
 import yaml
+from sensors.left_light_sensor import LeftLightSensor
+from sensors.right_light_sensor import RightLightSensor
 from swarmy.experiment import Experiment
 
 ### load the configuration file, check the config.yaml file for more information and to change to your needs
@@ -21,7 +23,7 @@ from agent.my_agent import MyAgent
 # add your controller, if you have more than one controller, add them to the list and specify the percentage of robots that should use this controller in the config.yaml file
 agent_controller = [MyController]
 # add your sensors, if you have more than one sensor, add them to the list all sensors are added to each robot
-agent_sensing = [BumperSensor]
+agent_sensing = [LeftLightSensor, RightLightSensor]
 
 exp1 = Experiment(config, agent_controller, agent_sensing, My_environment, MyAgent)
 

@@ -16,10 +16,10 @@ class My_environment(Environment):
             self.staticRectList.append(color, pygame.Rect(x, y, width, height), border_width))
         Returns:
         """
-        self.staticRectList.append(['BLACK', pygame.Rect(5, 5, self.config['world_width'] - 10, 5),5])
-        self.staticRectList.append(['BLACK', pygame.Rect(5, 5, 5, self.config['world_height']-10), 5])
-        self.staticRectList.append(['BLACK', pygame.Rect(5, self.config['world_height']-10, self.config['world_width'] - 10,5), 5])
-        self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width'] - 10, 5, 5, self.config['world_height']-10), 5])
+        # self.staticRectList.append(['BLACK', pygame.Rect(5, 5, self.config['world_width'] - 10, 5),5])
+        # self.staticRectList.append(['BLACK', pygame.Rect(5, 5, 5, self.config['world_height']-10), 5])
+        # self.staticRectList.append(['BLACK', pygame.Rect(5, self.config['world_height']-10, self.config['world_width'] - 10,5), 5])
+        # self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width'] - 10, 5, 5, self.config['world_height']-10), 5])
 
 
     def add_static_circle_object(self):
@@ -36,13 +36,10 @@ class My_environment(Environment):
     def set_background_color(self):
         """
         Set the background color of the environment.
-        Example:
-            self.displaySurface.fill(self.BACKGROUND_COLOR)
-        Hint: It is possible to use the light distribution to set the background color.
-        For displaying a light destribution you might find pygame.surfarray.make_surface and self.displaySurface.blit usefull)
-        Returns:
         """
         self.displaySurface.fill(self.BACKGROUND_COLOR)
+        light_surface = pygame.surfarray.make_surface(self.light_dist)
+        self.displaySurface.blit(light_surface, (0, 0))
 
     ###  LIGHT DISTRIBUTION ###
 
@@ -50,8 +47,26 @@ class My_environment(Environment):
         """
         Define the light distribution of the environment.
         Returns: 3 dimensional light distribution tuple (x,y,light_intensity)
-
         """
-        """ your implementation here"""
-        pass
+        center = np.array([self.width/2, self.height/2])
+        max_dist = np.sqrt(self.width**2 + self.height**2) / 2
+        light_dist = np.zeros((self.width, self.height, 3))
+        
+        for i in range(self.width):
+            for j in range(self.height):
+                p = np.array([i, j])
+                dist = np.linalg.norm(center - p)
+                intensity = max(0, 255 * (1 - dist / max_dist))
+                light_dist[i][j][0] = int(intensity)
+                light_dist[i][j][1] = int(intensity)
+                light_dist[i][j][2] = int(intensity)
+        return light_dist
+    
+    def get_light_intensity(self, position):
+        """
+        Get the light intensity at a given position.
+        Returns: light intensity
+        """
+        x, y = position
+        return self.light_dist[min(int(x), self.config["world_width"] - 1)][min(int(y), self.config["world_height"] - 1)][0]
 
