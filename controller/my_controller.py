@@ -51,7 +51,15 @@ class MyController(Actuation):
 
 
         """ Implement torus world by manipulating the robot position, here."""
-
+        if robot_position_x > self.config['world_width']:
+            robot_position_x = 0
+        elif robot_position_x < 0:
+            robot_position_x = self.config['world_width']
+        
+        if robot_position_y > self.config['world_height']:
+            robot_position_y = 0
+        elif robot_position_y < 0:
+            robot_position_y = self.config['world_height']
 
         self.agent.set_position(robot_position_x, robot_position_y, robot_heading)
 
