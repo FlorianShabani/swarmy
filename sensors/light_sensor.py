@@ -19,6 +19,6 @@ class LightSensor(Perception):
         rotated_y = self.position[0] * sin_h + self.position[1] * cos_h
         sensor_position = [robot_position_x + rotated_x, robot_position_y + rotated_y]
         light_intensity = self.environment.get_light_intensity(sensor_position)
-        print("Light intensity:", light_intensity)
-        self.environment.add_dynamic_circle_object([(255, 255, 150), sensor_position, 3, 1])
+        # print("Light intensity:", light_intensity)
+        self.environment.add_dynamic_circle_object([(255, 255, 150), sensor_position, 3, 3])
         return light_intensity

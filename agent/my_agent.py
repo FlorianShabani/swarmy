@@ -20,7 +20,7 @@ class MyAgent(Agent):
         x = random.randint(0, self.config['world_width'])
         y = random.randint(0, self.config['world_height'])
 
-        gamma = 0#random.randint(0, 360)
+        gamma = random.randint(0, 360)
         self.actuation.position[0] = x
         self.actuation.position[1] = y
         self.actuation.angle = gamma

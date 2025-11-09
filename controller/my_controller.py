@@ -37,11 +37,9 @@ class MyController(Actuation):
 
         # example controller
         sensor = self.agent.get_perception()
-        if sensor[1] == 1:
-            self.stepForward(0) # move backwards
-        else:
-            self.stepForward(1) # move forward with random velocity
-            # self.turn_right(2 * random.randint(-4, 4)) # turn right or left with random angle velocity
+        self.stepForward(2)
+        c = 1
+        self.turn_right(int(c * (sensor[2] - sensor[1])))
 
     def torus(self):
         """
