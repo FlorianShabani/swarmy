@@ -35,9 +35,9 @@ class MyController(Actuation):
 
         # example controller
         sensor = self.agent.get_perception()
-        self.stepForward(1)
         c = 1
         self.turn_right(int(c * (sensor[2] - sensor[1])))
+        self.stepForward(1)
 
     def torus(self):
         """

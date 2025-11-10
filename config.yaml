@@ -13,7 +13,7 @@ number_of_agents: 1
 default_velocity: 2           # choose even number
 default_angle_velocity: 2     # choose even number
 max_move_distance: 10         # maximum distance per step
-max_angle_change: 1
+max_angle_change: 5
 light_sensor_distance: 15     # distance of light sensor          # maximum angle change per step (degrees)
 save_trajectory: 1
 ## Controller ratios if different controllers are used for different robots
