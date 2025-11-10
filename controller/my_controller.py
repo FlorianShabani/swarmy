@@ -15,8 +15,6 @@ class MyController(Actuation):
         self.init_pos = True            # flag to set initial position of the robot
 
 
-
-
     def controller(self):
         """
         This function overwrites the abstract method of the robot controller.
@@ -37,7 +35,7 @@ class MyController(Actuation):
 
         # example controller
         sensor = self.agent.get_perception()
-        self.stepForward(2)
+        self.stepForward(1)
         c = 1
         self.turn_right(int(c * (sensor[2] - sensor[1])))
 

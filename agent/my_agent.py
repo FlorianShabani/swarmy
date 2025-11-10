@@ -1,6 +1,7 @@
 from swarmy.agent import Agent
 import random
 import pygame
+from datetime import datetime
 
 class MyAgent(Agent):
     def __init__(self,environment,controller, sensor, config):
@@ -10,6 +11,9 @@ class MyAgent(Agent):
         self.trajectory = []
 
 
+    def set_position(self, x: float, y: float, gamma: float):
+        self.trajectory.append((x, y))
+        return super().set_position(x, y, gamma)
 
     def initial_position(self):
         """
@@ -21,9 +25,6 @@ class MyAgent(Agent):
         y = random.randint(0, self.config['world_height'])
 
         gamma = random.randint(0, 360)
-        self.actuation.position[0] = x
-        self.actuation.position[1] = y
-        self.actuation.angle = gamma
         self.set_position(x, y, gamma)
 
 
@@ -34,11 +35,11 @@ class MyAgent(Agent):
         - Use pygame.draw.lines() to draw the trajectory of the robot and access the surface of the environment with self.environment.displaySurface
         - pygame allows to save an image of the current environment
         """
-        print("Save information not implemented, check my_agent.py")
-        """ your implementation here """
-
-        pass
-
+        print(self.trajectory)
+        for i in range(len(self.trajectory) - 1):
+            pygame.draw.circle(self.environment.displaySurface, (255, 0, 0), self.trajectory[i], 1)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pygame.image.save(self.environment.displaySurface, f"screenshot_{timestamp}.png")
 
 
 

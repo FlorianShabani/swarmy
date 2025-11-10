@@ -75,7 +75,7 @@ class Agent():
         print("controller and sensors not implemented")
         pass
     @abstractmethod
-    def save_information(self):
+    def save_information(self, last_robot):
         """
         Save information of the agent, e.g. trajectory or the einvironmental plot
         """
