@@ -21,13 +21,13 @@ class MyController(Actuation):
         sensor_values = self.agent.get_perception()
         left, center, right = sensor_values[1]
 
-        if min(left, center, right) > 0.5:
+        if min(left, center, right) > 0.5 or max(left, center, right) > 0.7:
             self.turn_left(self.angle_velocity)
             return
         elif center > 0.4:
             if left < right:
                 self.turn_left(self.angle_velocity)
-            elif right > left:
+            elif right < left:
                 self.turn_right(self.angle_velocity)
             else:
                 if random.choice([True, False]):

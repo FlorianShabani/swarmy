@@ -11,7 +11,7 @@ from swarmy.experiment import Experiment
 ### load the configuration file, check the config.yaml file for more information and to change to your needs
 with open ('config.yaml', 'r') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
-## Import uour implementation of the controller, sensor, environment and agent
+## Import your implementation of the controller, sensor, environment and agent
 from controller.my_controller import MyController
 from sensors.bumper_sensor import BumperSensor
 from world.my_world import My_environment
