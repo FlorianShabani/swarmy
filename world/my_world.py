@@ -40,8 +40,8 @@ class My_environment(Environment):
         Set the background color of the environment.
         """
         self.displaySurface.fill(self.BACKGROUND_COLOR)
-        light_surface = pygame.surfarray.make_surface(self.light_dist)
-        self.displaySurface.blit(light_surface, (0, 0))
+        # light_surface = pygame.surfarray.make_surface(self.light_dist)
+        # self.displaySurface.blit(light_surface, (0, 0))
 
     ###  LIGHT DISTRIBUTION ###
 

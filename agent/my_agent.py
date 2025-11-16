@@ -37,7 +37,9 @@ class MyAgent(Agent):
         """
         #print(self.trajectory)
         for i in range(len(self.trajectory) - 1):
-            pygame.draw.circle(self.environment.displaySurface, (255, 0, 0), self.trajectory[i], 1)
+            progress = i / max(1, len(self.trajectory) - 2)
+            color = (int(255 * progress), 0, int(255 * (1 - progress)))
+            pygame.draw.circle(self.environment.displaySurface, color, self.trajectory[i], 1)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         pygame.image.save(self.environment.displaySurface, f"plots/screenshot_{timestamp}.png")
 
