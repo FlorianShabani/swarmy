@@ -39,7 +39,7 @@ class MyAgent(Agent):
         for i in range(len(self.trajectory) - 1):
             pygame.draw.circle(self.environment.displaySurface, (255, 0, 0), self.trajectory[i], 1)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        pygame.image.save(self.environment.displaySurface, f"screenshot_{timestamp}.png")
+        pygame.image.save(self.environment.displaySurface, f"plots/screenshot_{timestamp}.png")
 
 
 

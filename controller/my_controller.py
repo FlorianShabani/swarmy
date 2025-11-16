@@ -18,12 +18,9 @@ class MyController(Actuation):
             self.agent.initial_position()
             self.init_pos = False
 
-        # Read proximity sensor values: [left, center, right]
         sensor_values = self.agent.get_perception()
         left, center, right = sensor_values[1]
 
-        # Rule-based control
-        # Priority: avoid frontal collisions, then turn away from side obstacles
         if min(left, center, right) > 0.5:
             self.turn_left(self.angle_velocity)
             return
@@ -40,15 +37,15 @@ class MyController(Actuation):
             self.stepForward(self.linear_velocity/2)
 
         elif left > 0.2:
-            # obstacle on the left → turn right
+            # obstacle on the left - turn right
             self.turn_left(self.angle_velocity)
             self.stepForward(self.linear_velocity/2)
         elif right > 0.2:
-            # obstacle on the right → turn left
+            # obstacle on the right - turn left
             self.turn_right(self.angle_velocity)
             self.stepForward(self.linear_velocity/2)
         else:
-            # path clear → small random jitter to explore
+            # path clear - small random jitter to explore
             jitter = random.choice([-1, 0, 1])
             if jitter == -1:
                 self.turn_left(int(1))
