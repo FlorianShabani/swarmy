@@ -24,9 +24,8 @@ class MyController(Actuation):
 
         # Rule-based control
         # Priority: avoid frontal collisions, then turn away from side obstacles
-        if min(left, center, right) > 0.8:
-            self.turn_left(self.angle_velocity)
-        elif center > 0.4:
+
+        if center > 0.5:
             if left < right:
                 self.turn_left(self.angle_velocity)
             elif right > left:
@@ -36,16 +35,13 @@ class MyController(Actuation):
                     self.turn_left(self.angle_velocity)
                 else:
                     self.turn_right(self.angle_velocity)
-            self.stepForward(self.linear_velocity/2)
 
-        elif left > 0.2:
+        elif left > 0.4:
             # obstacle on the left → turn right
             self.turn_left(self.angle_velocity)
-            self.stepForward(self.linear_velocity/2)
-        elif right > 0.2:
+        elif right > 0.4:
             # obstacle on the right → turn left
             self.turn_right(self.angle_velocity)
-            self.stepForward(self.linear_velocity/2)
         else:
             # path clear → small random jitter to explore
             jitter = random.choice([-1, 0, 1])
@@ -53,8 +49,9 @@ class MyController(Actuation):
                 self.turn_left(int(1))
             elif jitter == 1:
                 self.turn_right(int(1))
-            # always step forward
-            self.stepForward(self.linear_velocity)
+
+        # always step forward
+        self.stepForward(self.linear_velocity)
 
         # handle torus wrapping
         self.torus()
