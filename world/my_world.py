@@ -20,7 +20,9 @@ class My_environment(Environment):
         self.staticRectList.append(['BLACK', pygame.Rect(5, 5, 5, self.config['world_height']-10), 5])
         self.staticRectList.append(['BLACK', pygame.Rect(5, self.config['world_height']-10, self.config['world_width'] - 10,5), 5])
         self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width'] - 10, 5, 5, self.config['world_height']-10), 5])
-
+        self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width']//2 - 2, self.config['world_height']//8, 4, int(0.75*self.config['world_height'])), 4])
+        self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width']//4, self.config['world_height']//4 - 2, self.config['world_width']//4, 4), 4])
+        self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width']//2, int(0.75*self.config['world_height']) - 2, self.config['world_width']//4, 4), 4])
 
     def add_static_circle_object(self):
         """
