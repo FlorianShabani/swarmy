@@ -18,7 +18,6 @@ class MyController(Actuation):
             self.agent.initial_position()
             self.init_pos = False
 
-        # Read proximity sensor values: [left, center, right]
         sensor_values = self.agent.get_perception()
         left, center, right = sensor_values[1]
 
@@ -43,7 +42,7 @@ class MyController(Actuation):
             # obstacle on the right → turn left
             self.turn_right(self.angle_velocity)
         else:
-            # path clear → small random jitter to explore
+            # path clear - small random jitter to explore
             jitter = random.choice([-1, 0, 1])
             if jitter == -1:
                 self.turn_left(int(1))

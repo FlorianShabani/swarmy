@@ -45,7 +45,7 @@ class ProximitySensor(Perception):
                 end_pos
             )
 
-            # gather objects to check: walls + agents
+            # gather objects to check walls
             objects = [wall[1] for wall in self.environment.get_static_rect_list()]
             #print("Objects: ", objects)
 
