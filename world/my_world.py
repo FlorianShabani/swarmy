@@ -16,10 +16,10 @@ class My_environment(Environment):
             self.staticRectList.append(color, pygame.Rect(x, y, width, height), border_width))
         Returns:
         """
-        # self.staticRectList.append(['BLACK', pygame.Rect(5, 5, self.config['world_width'] - 10, 5),5])
-        # self.staticRectList.append(['BLACK', pygame.Rect(5, 5, 5, self.config['world_height']-10), 5])
-        # self.staticRectList.append(['BLACK', pygame.Rect(5, self.config['world_height']-10, self.config['world_width'] - 10,5), 5])
-        # self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width'] - 10, 5, 5, self.config['world_height']-10), 5])
+        self.staticRectList.append(['BLACK', pygame.Rect(5, 5, self.config['world_width'] - 10, 5),5])
+        self.staticRectList.append(['BLACK', pygame.Rect(5, 5, 5, self.config['world_height']-10), 5])
+        self.staticRectList.append(['BLACK', pygame.Rect(5, self.config['world_height']-10, self.config['world_width'] - 10,5), 5])
+        self.staticRectList.append(['BLACK', pygame.Rect(self.config['world_width'] - 10, 5, 5, self.config['world_height']-10), 5])
 
 
     def add_static_circle_object(self):
@@ -51,7 +51,7 @@ class My_environment(Environment):
         center = np.array([self.width/2, self.height/2])
         max_dist = np.sqrt(self.width**2 + self.height**2) / 2
         light_dist = np.zeros((self.width, self.height, 3))
-        
+
         for i in range(self.width):
             for j in range(self.height):
                 p = np.array([i, j])
@@ -61,7 +61,7 @@ class My_environment(Environment):
                 light_dist[i][j][1] = int(intensity)
                 light_dist[i][j][2] = int(intensity)
         return light_dist
-    
+
     def get_light_intensity(self, position):
         """
         Get the light intensity at a given position.

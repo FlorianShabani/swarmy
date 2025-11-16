@@ -35,7 +35,7 @@ class MyAgent(Agent):
         - Use pygame.draw.lines() to draw the trajectory of the robot and access the surface of the environment with self.environment.displaySurface
         - pygame allows to save an image of the current environment
         """
-        print(self.trajectory)
+        #print(self.trajectory)
         for i in range(len(self.trajectory) - 1):
             pygame.draw.circle(self.environment.displaySurface, (255, 0, 0), self.trajectory[i], 1)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -1,63 +1,73 @@
 import random
-
 from swarmy.actuation import Actuation
-import yaml
 
 class MyController(Actuation):
 
-    def __init__(self, agent,config):
+    def __init__(self, agent, config):
         super().__init__(agent)
-        """
-        self.linear_velocity = <your value> # set the linear velocity of the robot
-        self.angle_velocity =  <your value> # set the angular velocity of the robot
-        """
         self.config = config
         self.init_pos = True            # flag to set initial position of the robot
 
+        self.linear_velocity = 1.0      # default forward speed
+        self.angle_velocity = 15       # default turn speed (degrees per step)
+
 
     def controller(self):
-        """
-        This function overwrites the abstract method of the robot controller.
-        these function might help:
-        - self.stepBackward(velocity)
-        - self.turn_right(angle_velocity)
-        - self.turn_left(angle_velocity)
-        - x,y,gamme = self.agent.get_position() # returns the current position and heading of the robot.
-        - self.agent.set_position(new_position_x, new_position_y, robot_heading) # set the new position of the robot
-        - self.agent.get_perception() returns the ID of the robot and sensor values that you implemented in sensor() of the class MySensor()
-        Returns:
-        """
-
-        #Set initial robot position and direction
+        # Set initial robot position
         if self.init_pos:
             self.agent.initial_position()
             self.init_pos = False
 
-        # example controller
-        sensor = self.agent.get_perception()
-        c = 1
-        self.turn_right(int(c * (sensor[2] - sensor[1])))
-        self.stepForward(1)
+        # Read proximity sensor values: [left, center, right]
+        sensor_values = self.agent.get_perception()
+        left, center, right = sensor_values[1]
+
+        # Rule-based control
+        # Priority: avoid frontal collisions, then turn away from side obstacles
+
+        if center > 0.5:
+            if left < right:
+                self.turn_left(self.angle_velocity)
+            elif right > left:
+                self.turn_right(self.angle_velocity)
+            else:
+                if random.choice([True, False]):
+                    self.turn_left(self.angle_velocity)
+                else:
+                    self.turn_right(self.angle_velocity)
+
+        elif left > 0.4:
+            # obstacle on the left → turn right
+            self.turn_left(self.angle_velocity)
+        elif right > 0.4:
+            # obstacle on the right → turn left
+            self.turn_right(self.angle_velocity)
+        else:
+            # path clear → small random jitter to explore
+            jitter = random.choice([-1, 0, 1])
+            if jitter == -1:
+                self.turn_left(int(1))
+            elif jitter == 1:
+                self.turn_right(int(1))
+
+        # always step forward
+        self.stepForward(self.linear_velocity)
+
+        # handle torus wrapping
+        self.torus()
+
 
     def torus(self):
-        """
-        Implement torus world by manipulating the robot position. Again self.agent.get_position and self.agent.set_position might be useful
-        """
-        robot_position_x,robot_position_y, robot_heading = self.agent.get_position()
+        robot_x, robot_y, robot_heading = self.agent.get_position()
 
+        if robot_x > self.config['world_width']:
+            robot_x = 0
+        elif robot_x < 0:
+            robot_x = self.config['world_width']
 
-        """ Implement torus world by manipulating the robot position, here."""
-        if robot_position_x > self.config['world_width']:
-            robot_position_x = 0
-        elif robot_position_x < 0:
-            robot_position_x = self.config['world_width']
-        
-        if robot_position_y > self.config['world_height']:
-            robot_position_y = 0
-        elif robot_position_y < 0:
-            robot_position_y = self.config['world_height']
+        if robot_y > self.config['world_height']:
+            robot_y = 0
+        elif robot_y < 0:
+            robot_y = self.config['world_height']
 
-        self.agent.set_position(robot_position_x, robot_position_y, robot_heading)
-
-
-
+        self.agent.set_position(robot_x, robot_y, robot_heading)
