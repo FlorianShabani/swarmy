@@ -55,7 +55,6 @@ class Experiment():
         """
         # pygame presets
         pygame.init() 					        # initialize pygame
-        running = True   				        # termination condition
             
         # -----------------------------------------------------------------------------
         # instantiations
@@ -75,7 +74,8 @@ class Experiment():
         for i in range(self.config['iterations']):
             scores = self.evaluate(agent_list)
             self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
-            agent_list = self.crossover(scores, agent_list)
+            # agent_list = self.crossover(scores, agent_list)
+
         
 
         if self.config['save_trajectory']:
@@ -149,5 +149,5 @@ class Experiment():
         return scores
     
     def crossover(self, scores, agent_list):
-        # Tournament 
-
+        # Only 1 agent for now
+        return agent_list
