@@ -71,7 +71,7 @@ class Experiment():
         # -----------------------------------------------------------------------------
         self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
 
-        for i in range(self.config['iterations']):
+        for i in range(self.config['generations']):
             scores = self.evaluate(agent_list)
             self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
             # agent_list = self.crossover(scores, agent_list)

@@ -15,6 +15,13 @@ class MyController(Actuation):
         sensor_values = self.agent.get_perception()
         left, center, right = sensor_values[1]
         
+        print(sensor_values)
+
+        v_l = self.genome[0] * left + self.genome[1]
+        v_r = self.genome[2] * center + self.genome[3] + self.genome[4] * right + self.genome[5]
+        self.turn_right(int((v_r - v_l)))
+
+        self.stepForward(1)
         
         
     def torus(self):

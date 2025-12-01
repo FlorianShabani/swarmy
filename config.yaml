@@ -6,7 +6,7 @@ max_timestep: 4000 # Maximum number of timesteps for the simulation
 world_width: 720
 world_height: 720
 background_color: !!python/tuple [200, 200, 200]
-iterations: 100
+generations: 100
 
 ## Robot parameters
 number_of_agents: 1
