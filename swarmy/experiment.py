@@ -57,9 +57,6 @@ class Experiment():
         pygame.init() 					        # initialize pygame
         running = True   				        # termination condition
             
-        # tracking variable
-        timesteps_counter = 0
-
         # -----------------------------------------------------------------------------
         # instantiations
 
@@ -67,28 +64,40 @@ class Experiment():
         environment = self.world
         environment.render_init()
 
-        # instatiate agent
-        agentList = []
-        agent_counter = 0
-        controller_counter = 0
-        while agent_counter <self.config['number_of_agents']:
-            if agent_counter/self.config['number_of_agents'] >= self.config['controller_1']:
-                controller_counter = 1
-            newAgent = self.agent(environment,self.agent_controller[controller_counter],self.agent_sensing, self.config)
-            newAgent.initial_position()
-            newAgent.unique_id = agent_counter
-            agentList.append(newAgent)
-            agent_counter +=1
-        environment.agentlist = agentList
-        # -----------------------------------------------------------------------------
+        # instantiate agents
+        agent_list = self.initialize_agents(environment)
         # initializations
-        if agentList:
-            agentList[0].body.helperLUT()    # global lookup table needs to be calculated only once
+        if agent_list:
+            agent_list[0].body.helperLUT()    # global lookup table needs to be calculated only once
+        # -----------------------------------------------------------------------------
+        self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
+
+        for i in range(self.config['iterations']):
+            scores = self.evaluate(agent_list)
+            self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
+            agent_list = self.crossover(scores, agent_list)
+        
+
+        if self.config['save_trajectory']:
+            for i,agent in enumerate(agent_list):
+                if i == len(agent_list)-1:
+                    agent.save_information(True)
+                else:
+                    agent.save_information(False)
+
+
+        print('Experiment finished by manual stopping or maximum timesteps reached. Check config.yaml to increase the maximum timesteps.')
+        pygame.quit()
+        return None
+        
+    
+    def run_experiment(self, environment, rendering, agentList, iterations = 100):
+        timesteps_counter = 0
 
         # =============================================================================
         # Run experiment: Loop-Processing
         # =============================================================================
-        while running and timesteps_counter < self.config["max_timestep"]:
+        while timesteps_counter < iterations:
             timesteps_counter += 1
 
             
@@ -98,45 +107,47 @@ class Experiment():
             # get the set of keys pressed and check for user input
             pressedKeys = pygame.key.get_pressed()
                        
-            # handle user input
-            for event in pygame.event.get():
-                
-                if event.type == pygame.KEYDOWN:    # Check for KEYDOWN event
-                                    
-                    # If the Esc key is pressed, then exit the main loop
-                    if event.key == pygame.K_ESCAPE:
-                        running = False
-                        
-                # Check for QUIT event. If QUIT, then set running to false.
-                elif event.type == pygame.QUIT:
-                    running = False
-     
             #-----------------------------------------------------------------------------
             # SYNCHRON         
             for agent in agentList:
                 environment.agent_object_list.append(
                     pygame.Rect(agent.actuation.position[0] - 15, agent.actuation.position[1] - 15, 30, 30))
-            # update agents
             for newAgent in agentList:
                 newAgent.processing.perform(pressedKeys)
-                #pygame.Rect(5, self.config['world_height'] - 10, self.config['world_width'] - 10, 5)
 
-
-            # display results
             if(rendering == 1):
                 for newAgent in agentList:
                     newAgent.body.render()         # update agent bod
                 environment.render()           # update content on display
 
             environment.agent_object_list = []
-        if self.config['save_trajectory']:
-            for i,agent in enumerate(agentList):
-                if i == len(agentList)-1:
-                    agent.save_information(True)
-                else:
-                    agent.save_information(False)
 
+    def initialize_agents(self, environment):
+        # instatiate agent
+        agentList = []
+        controller_counter = 0
+        for agent_counter in range(self.config['number_of_agents']):
+            if agent_counter/self.config['number_of_agents'] >= self.config['controller_1']:
+                controller_counter = 1
 
-        print('Experiment finished by manual stopping or maximum timesteps reached. Check config.yaml to increase the maximum timesteps.')
-        pygame.quit()
-        return None
+            newAgent = self.agent(environment, self.agent_controller[controller_counter],self.agent_sensing, self.config, agent_counter)
+            agentList.append(newAgent)
+        return agentList
+
+    def evaluate(self, agentList):
+        scores = []
+        grid_size = 0.01 * min(self.config['world_width'], self.config['world_height'])
+        
+        for agent in agentList:
+            visited_cells = set()
+            for x, y in agent.trajectory:
+                grid_x = int(x // grid_size)
+                grid_y = int(y // grid_size)
+                visited_cells.add((grid_x, grid_y))
+            scores.append(len(visited_cells))
+        
+        return scores
+    
+    def crossover(self, scores, agent_list):
+        # Tournament 
+

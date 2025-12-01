@@ -4,12 +4,11 @@ import pygame
 from datetime import datetime
 
 class MyAgent(Agent):
-    def __init__(self,environment,controller, sensor, config):
-        super().__init__(environment,controller, sensor, config)
-
+    def __init__(self,environment,controller, sensor, config, unique_id):
         self.environment = environment
         self.trajectory = []
-
+        super().__init__(environment,controller, sensor, config, unique_id)
+        
 
     def set_position(self, x: float, y: float, gamma: float):
         self.trajectory.append((x, y))

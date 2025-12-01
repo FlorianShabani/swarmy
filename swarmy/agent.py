@@ -41,7 +41,7 @@ class Agent():
         perception  (perception.py):   represents the sensing capabilities
         actuation   (actuation.py):    represents the actuator capabilites
     """
-    def __init__(self,e,controller, sensor, config):
+    def __init__(self,e,controller, sensor, config, unique_id):
         """
         Initialize agent object.
         """
@@ -57,6 +57,8 @@ class Agent():
         self.actuation = controller(self, config)   #MyController(self, p, d)
         self.processing = Processing(self)
         self.config = config
+        self.unique_id = unique_id
+        self.initial_position()
 
     @abstractmethod
     def initial_position(self):
