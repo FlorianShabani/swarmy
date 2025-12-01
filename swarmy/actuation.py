@@ -56,6 +56,10 @@ class Actuation():
     def controller(self):
         print('Controller not implemented')
 
+    @abstractmethod
+    def mutate(self):
+        print('Mutation not implemented')
+
     def stepForward(self, velocity):
         """
         One step forward.

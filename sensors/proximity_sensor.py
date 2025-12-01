@@ -18,6 +18,10 @@ class ProximitySensor(Perception):
         # angles relative to robot heading
         self.angles = [-40, 0, 40]  # left, center, right
 
+        # gather objects to check walls
+        self.objects = [wall[1] for wall in self.environment.get_static_rect_list()]
+
+
     def sensor(self):
         robot_x, robot_y, robot_heading = self.agent.get_position()
         rob_pos = pygame.Vector2(robot_x, robot_y)
@@ -45,12 +49,8 @@ class ProximitySensor(Perception):
                 end_pos
             )
 
-            # gather objects to check walls
-            objects = [wall[1] for wall in self.environment.get_static_rect_list()]
-            #print("Objects: ", objects)
-
             min_dist = self.range_r
-            for idx, obj in enumerate(objects):
+            for idx, obj in enumerate(self.objects):
                 intersection = np.asarray(obj.clip(helper_line))
                 #print(intersection , " for object ", obj)
                 if intersection[2] > 0:
@@ -67,6 +67,6 @@ class ProximitySensor(Perception):
             else:
                 sensor_values.append(0.0)
 
-        print("Sensor_value:", sensor_values)
+        # print("Sensor_value:", sensor_values)
         #time.sleep(0.1)
         return sensor_values

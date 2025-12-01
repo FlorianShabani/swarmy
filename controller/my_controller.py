@@ -10,20 +10,27 @@ class MyController(Actuation):
         self.linear_velocity = 1.0      # default forward speed
         self.angle_velocity = 15       # default turn speed (degrees per step)
         self.genome = [random.random() for _ in range(6)]
+        print(self.genome)
 
     def controller(self):
+    
         sensor_values = self.agent.get_perception()
         left, center, right = sensor_values[1]
-        
-        print(sensor_values)
-
+            
         v_l = self.genome[0] * left + self.genome[1]
         v_r = self.genome[2] * center + self.genome[3] + self.genome[4] * right + self.genome[5]
         self.turn_right(int((v_r - v_l)))
 
-        self.stepForward(1)
-        
-        
+        if (sensor_values[2] == 0):
+            self.stepForward(1)
+            
+    def mutate(self):
+        for i in range(len(self.genome)):
+            if random.random() < self.config['mutation_rate']:
+                self.genome[i] += random.random() * self.config['mutation_strength']
+
+        print(self.genome)
+
     def torus(self):
         robot_x, robot_y, robot_heading = self.agent.get_position()
 

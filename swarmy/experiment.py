@@ -21,6 +21,7 @@ The parameters for the simulation are:
 import pygame
 import random
 import sys
+import copy
 sys.path.insert(0, '..')  # add parent directory to path
 # import internal object classes
 #from .environment import Environment
@@ -70,12 +71,25 @@ class Experiment():
             agent_list[0].body.helperLUT()    # global lookup table needs to be calculated only once
         # -----------------------------------------------------------------------------
         self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
+        scores = self.evaluate(agent_list)
+        genome = agent_list[0].actuation.genome
 
         for i in range(self.config['generations']):
-            scores = self.evaluate(agent_list)
+            for agent in agent_list:
+                agent.actuation.mutate()
+                agent.initial_position()        
             self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
-            # agent_list = self.crossover(scores, agent_list)
+            new_scores = self.evaluate(agent_list)
+            print('Generation: ', i, 'Scores: ', scores, 'New scores: ', new_scores)
 
+            if (new_scores[0] > scores[0]):
+                scores = new_scores
+                genome = agent_list[0].actuation.genome
+            else:
+                agent_list[0].actuation.genome = genome
+
+
+            # agent_list = self.crossover(scores, agent_list)
         
 
         if self.config['save_trajectory']:
@@ -136,7 +150,7 @@ class Experiment():
 
     def evaluate(self, agentList):
         scores = []
-        grid_size = 0.01 * min(self.config['world_width'], self.config['world_height'])
+        grid_size = 0.02 * min(self.config['world_width'], self.config['world_height'])
         
         for agent in agentList:
             visited_cells = set()

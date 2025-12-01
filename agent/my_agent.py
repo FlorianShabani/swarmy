@@ -20,10 +20,13 @@ class MyAgent(Agent):
         Hint:
         Use x,y,gamma = self.set_position(x-position, y-position, heading) to set the position of the agent.
         """
-        x = random.randint(0, self.config['world_width'])
-        y = random.randint(0, self.config['world_height'])
+        # x = random.randint(0, self.config['world_width'])
+        # y = random.randint(0, self.config['world_height'])
 
-        gamma = random.randint(0, 360)
+        # gamma = random.randint(0, 360)
+        x = self.config['world_width'] / 10
+        y = self.config['world_height'] / 10
+        gamma = 0
         self.set_position(x, y, gamma)
 
 
