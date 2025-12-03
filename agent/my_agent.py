@@ -9,7 +9,6 @@ class MyAgent(Agent):
         self.trajectory = []
         super().__init__(environment,controller, sensor, config, unique_id)
         
-
     def set_position(self, x: float, y: float, gamma: float):
         self.trajectory.append((x, y))
         return super().set_position(x, y, gamma)

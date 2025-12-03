@@ -18,6 +18,8 @@ The parameters for the simulation are:
 # =============================================================================
 # Imports
 # =============================================================================
+from datetime import datetime
+from hmac import new
 import pygame
 import random
 import sys
@@ -40,7 +42,7 @@ class Experiment():
         self.config = config
         self.agent_controller = agent_controller
         self.agent_sensing = agent_sensing
-        self.world = world(config)
+        self.environment = world(config)
         self.agent = agent
         
 
@@ -61,7 +63,7 @@ class Experiment():
         # instantiations
 
         # instantiate environment
-        environment = self.world
+        environment = self.environment
         environment.render_init()
 
         # instantiate agents
@@ -74,36 +76,45 @@ class Experiment():
         scores = self.evaluate(agent_list)
         genome = agent_list[0].actuation.genome
 
+        agent_paths = []    
+
         for i in range(self.config['generations']):
             for agent in agent_list:
+                agent.trajectory = []
                 agent.actuation.mutate()
                 agent.initial_position()        
             self.run_experiment(environment, rendering, agent_list, self.config['max_timestep'])
             new_scores = self.evaluate(agent_list)
             print('Generation: ', i, 'Scores: ', scores, 'New scores: ', new_scores)
-
-            if (new_scores[0] > scores[0]):
-                scores = new_scores
+        
+            if new_scores[0] > scores[0]:
                 genome = agent_list[0].actuation.genome
+                scores = new_scores
+                agent_paths.append(copy.copy(agent_list[0].trajectory))
             else:
                 agent_list[0].actuation.genome = genome
-
-
-            # agent_list = self.crossover(scores, agent_list)
-        
-
-        if self.config['save_trajectory']:
-            for i,agent in enumerate(agent_list):
-                if i == len(agent_list)-1:
-                    agent.save_information(True)
-                else:
-                    agent.save_information(False)
+        # if self.config['save_trajectory']:
+        #     for i,agent in enumerate(agent_list):
+        #         if i == len(agent_list)-1:
+        #             agent.save_information(True)
+        #         else:
+        #             agent.save_information(False)
+        self.save_information(environment, agent_paths)
 
 
         print('Experiment finished by manual stopping or maximum timesteps reached. Check config.yaml to increase the maximum timesteps.')
         pygame.quit()
         return None
-        
+
+    def save_information(self, environment, agent_paths):
+        for i in range(len(agent_paths)):
+            path = agent_paths[i]
+            color = (int(255 * (i/len(agent_paths))), 0, int(255 * ((1.0 - (i/len(agent_paths))))))
+            for j in range(len(path) - 1):
+                pygame.draw.circle(environment.displaySurface, color, path[j], 1)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        pygame.image.save(environment.displaySurface, f"plots/screenshot_{timestamp}.png")
+
     
     def run_experiment(self, environment, rendering, agentList, iterations = 100):
         timesteps_counter = 0
@@ -150,7 +161,7 @@ class Experiment():
 
     def evaluate(self, agentList):
         scores = []
-        grid_size = 0.02 * min(self.config['world_width'], self.config['world_height'])
+        grid_size = 0.01 * min(self.config['world_width'], self.config['world_height'])
         
         for agent in agentList:
             visited_cells = set()
@@ -162,6 +173,6 @@ class Experiment():
         
         return scores
     
-    def crossover(self, scores, agent_list):
+    def crossover(self, scores, new_scores, agent_list):
         # Only 1 agent for now
         return agent_list

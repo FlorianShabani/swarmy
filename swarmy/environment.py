@@ -14,6 +14,7 @@ This module represents the physical environment.
 import pygame
 import numpy as np
 from abc import abstractmethod
+import copy
 
 # =============================================================================
 # Class
@@ -54,6 +55,21 @@ class Environment():
         self.clock = pygame.time.Clock()  # create an object to help track time
         self.add_static_rectangle_object()
         self.add_static_circle_object()
+    
+    def __deepcopy__(self, memo):
+        # Create new instance without calling __init__
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        
+        # Copy all attributes except clock
+        for key, value in self.__dict__.items():
+            if key == 'clock':
+                # Create new clock instead of copying
+                setattr(result, key, pygame.time.Clock())
+            else:
+                setattr(result, key, copy.deepcopy(value, memo))
+        return result
         ### SOLUTION LIGHT DISTRIBUTION ###
         #self.light_dist = np.zeros((self.width,self.height))
         #self.defineLight()

@@ -47,7 +47,6 @@ class Agent():
         """
         # environment and other objects. This variables are only needed for simulation calculations and are not needed from the agents point of view
         self.environment = e
-        self.unique_id = None
         # instantiate agent parts
         self.body = Body(self)
         self.perception = []

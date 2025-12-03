@@ -27,7 +27,7 @@ class MyController(Actuation):
     def mutate(self):
         for i in range(len(self.genome)):
             if random.random() < self.config['mutation_rate']:
-                self.genome[i] += random.random() * self.config['mutation_strength']
+                self.genome[i] += (random.random() - 0.5) * self.config['mutation_strength']
 
         print(self.genome)
 
